@@ -8,8 +8,9 @@ import { Button } from 'antd';
 
 import { Content, Tool } from '@/components/Layout';
 import Table from '@/components/Table';
+import UserModal from './components/UserModal';
 
-const index = () => {
+const index = ({ list }) => {
     const columns = [
         {
             title: '用户名',
@@ -27,7 +28,8 @@ const index = () => {
             title: '用户类型',
             dataIndex: 'type',
             key: 'type',
-            width: '25%'
+            width: '25%',
+            render: text => <span>{text === '0' ? '管理员' : '普通用户'}</span>
         },
         {
             title: '操作',
@@ -44,8 +46,9 @@ const index = () => {
         <Content>
             <Tool>
                 <Button type="primary">添加用户</Button>
+                <UserModal></UserModal>
             </Tool>
-            <Table columns={columns} />
+            <Table columns={columns} dataSource={list} rowKey={(list, index) => list.id} />
         </Content>
     );
 };

@@ -27,8 +27,6 @@ export default {
                     payload: { data: { list: [], total: 0 } },
                 });
             }
-            const list = yield select(state => state.users.list);
-            console.log(list);
         }
     },
     subscriptions: {
