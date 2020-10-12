@@ -3,15 +3,14 @@
 */
 import React from 'react';
 import { connect } from 'dva';
-import { Button, Message } from 'antd';
+import { Button, Message, Popconfirm } from 'antd';
 
 
 import { Content, Tool } from '@/components/Layout';
 import Table from '@/components/Table';
 import UserModal from './components/UserModal';
 
-const index = ({ list, dispatch, loading, addLoading }) => {
-    console.log(addLoading)
+const index = ({ list, total, page, pageSize, dispatch, loading, addLoading }) => {
     const columns = [
         {
             title: '用户名',
@@ -37,8 +36,12 @@ const index = ({ list, dispatch, loading, addLoading }) => {
             key: 'operation',
             render: (text, record) => (
                 <div>
-                    <span>编辑</span>
-                    <span>删除</span>
+                    <UserModal title="编辑用户" record={record} onOk={value => handleEdit(record.id, value)}>
+                        <span>编辑</span>
+                    </UserModal>
+                    <Popconfirm title="确定删除该用户吗" onConfirm={() => handleDelete(record.id)}>
+                        <span>删除</span>
+                    </Popconfirm>
                 </div>
             )
         }
@@ -47,27 +50,82 @@ const index = ({ list, dispatch, loading, addLoading }) => {
         dispatch({
             type: 'users/fetch',
             payload: { page: 1 },
-        })
-    }
-    const handleAdd = (values) => {
-        return dispatch({ type: 'users/add', payload: values }).then(res => {
-            if (res && res.state === 'success') {
-                Message.success(res.msg);
-                reload();
-                return res;
-            } else {
-                Message.error('添加用户失败');
-            }
         });
-    }
+    };
+    // 编辑
+    const handleEdit = (id, value) => {
+        return dispatch({
+            type: 'users/edit',
+            payload: { id, value }
+        })
+            .then(res => {
+                if (res && res.state === 'success') {
+                    Message.success(res.msg || '编辑用户成功');
+                    reload();
+                    return res;
+                } else {
+                    Message.error('编辑用户失败');
+                }
+            });
+    };
+    // 删除
+    const handleDelete = id => {
+        dispatch({
+            type: 'users/remove',
+            payload: id,
+        })
+            .then(res => {
+                if (res && res.state === 'success') {
+                    Message.success(res.msg || '删除用户成功');
+                    reload();
+                    return res;
+                } else {
+                    Message.error('删除用户失败');
+                }
+            });
+    };
+    const handleAdd = (values) => {
+        return dispatch({ type: 'users/add', payload: values })
+            .then(res => {
+                if (res && res.state === 'success') {
+                    Message.success(res.msg || '编辑用户成功');
+                    reload();
+                    return res;
+                } else {
+                    Message.error('添加用户失败');
+                }
+            });
+    };
+    // 分页
+    const handleChange = pageNum => {
+        if (page !== pageNum) {
+            // 发起请求
+            dispatch({
+                type: 'users/fetch',
+                payload: {
+                    page: pageNum,
+                }
+            });
+        }
+    };
     return (
         <Content>
             <Tool>
-                <UserModal onAdd={handleAdd} addLoading={addLoading}>
+                <UserModal onOk={handleAdd} addLoading={addLoading}>
                     <Button type="primary" >添加用户</Button>
                 </UserModal>
             </Tool>
-            <Table loading={loading} columns={columns} dataSource={list} rowKey={(list, index) => list.id} />
+            <Table
+                loading={loading}
+                columns={columns}
+                dataSource={list}
+                pagination={{
+                    total,
+                    pageSize,
+                    current: page,
+                    onChange: handleChange
+                }}
+                rowKey={(list, index) => list.id} />
         </Content>
     );
 };

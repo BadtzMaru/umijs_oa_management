@@ -10,48 +10,50 @@ const RadioGroup = Radio.Group;
 const formItemLayout = {
     labelCol: { span: 6 },
     wrapperCol: { span: 14 },
-}
+};
 
 class UserModal extends Component {
     state = {
         visible: false
-    }
+    };
     handleOpenClick = () => {
         this.setState({
             visible: true,
         });
-    }
+    };
     handleCancel = () => {
         this.setState({
             visible: false,
         });
-    }
+    };
     handleOk = () => {
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 // 请求
-                this.props.onAdd(values).then(res => {
+                this.props.onOk(values).then(res => {
                     if (res.state === 'success') {
                         this.handleCancel();
                     }
                 });
             }
         });
-    }
+    };
     render() {
         const { visible } = this.state;
-        const { children, addLoading } = this.props;
+        const { children, addLoading, title, record } = this.props;
         const { getFieldDecorator } = this.props.form;
+        const { username, nickname, type } = record;
         return (
             <>
                 {withClick(children, this.handleOpenClick)}
-                < Modal title="添加用户" visible={visible} centered={true} maskClosable={false} onCancel={this.handleCancel} onOk={this.handleOk} confirmLoading={addLoading}>
+                < Modal title={title} visible={visible} centered={true} maskClosable={false} onCancel={this.handleCancel} onOk={this.handleOk} confirmLoading={addLoading}>
                     <Form>
                         <FormItem label="用户名" {...formItemLayout}>
                             {getFieldDecorator('username', {
                                 rules: [
                                     { required: true, message: '用户名不能为空' }
-                                ]
+                                ],
+                                initialValue: username,
                             })(
                                 <Input placeholder="请输入用户名" />
                             )}
@@ -60,7 +62,8 @@ class UserModal extends Component {
                             {getFieldDecorator('nickname', {
                                 rules: [
                                     { required: true, message: '昵称不能为空' }
-                                ]
+                                ],
+                                initialValue: nickname,
                             })(
                                 <Input placeholder="请输入姓名" />
                             )}
@@ -70,7 +73,7 @@ class UserModal extends Component {
                                 rules: [
                                     { required: true, message: '用户类型不能为空,请选择' }
                                 ],
-                                initialValue: '1',
+                                initialValue: type || '1',
                             })(
                                 <RadioGroup>
                                     <Radio value={'0'}>管理员</Radio>
@@ -85,5 +88,14 @@ class UserModal extends Component {
         );
     }
 }
+
+UserModal.defaultProps = {
+    title: '添加用户',
+    record: {
+        type: '1',
+        username: '',
+        nickname: '',
+    },
+};
 
 export default Form.create()(UserModal);

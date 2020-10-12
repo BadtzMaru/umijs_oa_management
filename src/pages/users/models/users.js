@@ -5,7 +5,7 @@ export default {
         list: [],
         total: 0,
         page: 1,
-        pageSize: 5,
+        pageSize: 10,
     },
     reducers: {
         setData(state, { payload: { list, total, page } }) {
@@ -29,8 +29,15 @@ export default {
             }
         },
         *add({ payload }, { call }) {
-            return yield call(usersServices.add, payload)
-        }
+            return yield call(usersServices.add, payload);
+        },
+        *edit({ payload: { id, value } }, { call }) {
+            return yield call(usersServices.edit, id, value);
+        },
+        *remove({ payload }, { call }) {
+            return yield call(usersServices.remove, payload);
+        },
+
     },
     subscriptions: {
         setup({ dispatch, history }) {

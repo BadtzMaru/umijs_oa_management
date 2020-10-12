@@ -24,6 +24,9 @@ function index({ location }) {
                     <MenuItem key="/users">
                         <Link to="/users">用户</Link>
                     </MenuItem>
+                    <MenuItem key="/reports">
+                        <Link to="/reports">周报</Link>
+                    </MenuItem>
                 </Menu>
                 <div className="right">
                     <Dropdown overlay={menu}>
