@@ -3,14 +3,15 @@
 */
 import React from 'react';
 import { connect } from 'dva';
-import { Button } from 'antd';
+import { Button, Message } from 'antd';
 
 
 import { Content, Tool } from '@/components/Layout';
 import Table from '@/components/Table';
 import UserModal from './components/UserModal';
 
-const index = ({ list }) => {
+const index = ({ list, dispatch, loading, addLoading }) => {
+    console.log(addLoading)
     const columns = [
         {
             title: '用户名',
@@ -42,15 +43,37 @@ const index = ({ list }) => {
             )
         }
     ];
+    const reload = () => {
+        dispatch({
+            type: 'users/fetch',
+            payload: { page: 1 },
+        })
+    }
+    const handleAdd = (values) => {
+        return dispatch({ type: 'users/add', payload: values }).then(res => {
+            if (res && res.state === 'success') {
+                Message.success(res.msg);
+                reload();
+                return res;
+            } else {
+                Message.error('添加用户失败');
+            }
+        });
+    }
     return (
         <Content>
             <Tool>
-                <Button type="primary">添加用户</Button>
-                <UserModal></UserModal>
+                <UserModal onAdd={handleAdd} addLoading={addLoading}>
+                    <Button type="primary" >添加用户</Button>
+                </UserModal>
             </Tool>
-            <Table columns={columns} dataSource={list} rowKey={(list, index) => list.id} />
+            <Table loading={loading} columns={columns} dataSource={list} rowKey={(list, index) => list.id} />
         </Content>
     );
 };
 
-export default connect(({ users }) => ({ ...users }))(index);
+export default connect(({ users, loading }) => ({
+    ...users,
+    loading: loading.effects['users/fetch'],
+    addLoading: loading.effects['users/add'],
+}))(index);
