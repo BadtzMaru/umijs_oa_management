@@ -1,15 +1,18 @@
 import React from 'react';
 import { Menu, Dropdown, Icon, Affix } from 'antd';
-import Link from 'umi/link';
-import withRouter from 'umi/withRouter';
+import { Link, router, withRouter } from 'umi';
 
 const MenuItem = Menu.Item;
 
 function index({ location }) {
+    const onLogout = () => {
+        localStorage.clear();
+        router.push('/login');
+    };
     const menu = (
         <Menu>
             <MenuItem>
-                <span>退出</span>
+                <span onClick={onLogout}>退出</span>
             </MenuItem>
         </Menu>
     );
@@ -32,8 +35,8 @@ function index({ location }) {
                     <Dropdown overlay={menu}>
                         <a href="/">
                             <Icon type="user" style={{ marginRight: 3 }} />
-                        admin
-                    </a>
+                            {localStorage.nickname}
+                        </a>
                     </Dropdown>
                 </div>
             </div>

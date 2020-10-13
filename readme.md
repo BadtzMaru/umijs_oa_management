@@ -30,4 +30,6 @@
     title: 页面标题
 */`
 
+# jwt加密   jwt.io
+1. `yarn add jwt-decode`
 
