@@ -9,17 +9,28 @@ import { router } from 'umi';
 
 import { Content } from '@/components/Layout';
 
-class index extends Component {
+class $id$ extends Component {
     constructor(props) {
         super(props);
+        this.id = props.match.prarms.id;
         this.state = {
             editorContent: null,
             editorCheck: true,
         };
     }
     componentDidMount() {
+        if (this.id) {
+            // 编辑
+            this.getDatas();
+        }
         this.initEditor();
         this.getAllUsers();
+    }
+    getDatas() {
+        this.props.dispatch({
+            type: 'reports/fetchInfo',
+            payload: this.id,
+        });
     }
     getAllUsers() {
         this.props.dispatch({
@@ -94,7 +105,7 @@ class index extends Component {
                                 { required: true, message: '周报标题不能为空' }
                             ],
                         })(
-                            <Input placeholder="请输入周报标题" />
+                            <Input placeholder="请输入周报标题" autoComplete="off" />
                         )}
                     </Form.Item>
                     <Form.Item label="接收人">
@@ -121,4 +132,4 @@ class index extends Component {
 export default connect(({ reports, loading }) => ({
     ...reports,
     loading: loading.effects['reports/add'],
-}))(Form.create()(index));
+}))(Form.create()($id$));

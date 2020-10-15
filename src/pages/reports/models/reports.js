@@ -65,7 +65,10 @@ export default {
         },
         *add({ payload }, { call }) {
             return yield call(reportsServices.add, payload);
-        }
+        },
+        *fetchInfo({ payload }, { call, put }) {
+            const res = yield call(reportsServices.fetchInfo, payload);
+        },
     },
     subscriptions: {
         setup({ dispatch, history }) {

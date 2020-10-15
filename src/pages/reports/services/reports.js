@@ -14,3 +14,7 @@ export function add(params) {
 export function fetchMyReports({ page, pageSize }) {
     return request(`/api/users/reports/${page}/${pageSize}/${localStorage.userId}`);
 }
+
+export function fetchInfo(id) {
+    return request(`/api/users/report_detail/${localStorage.userId}/${id}`);
+}
