@@ -1,6 +1,3 @@
-/*
-    title: 用户
-*/
 import React from 'react';
 import { connect } from 'dva';
 import { Button, Message, Popconfirm } from 'antd';

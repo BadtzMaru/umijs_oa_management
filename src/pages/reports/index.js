@@ -1,6 +1,3 @@
-/*
-    title: 周报
-*/
 import React, { Component } from 'react';
 import { Link } from 'umi';
 import { Button } from 'antd';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Card, Pagination, Tooltip, Icon } from 'antd';
+import { Row, Col, Card, Pagination, Tooltip, Icon, Popconfirm, Message } from 'antd';
 import { connect } from 'dva';
 
 const List = ({ list, page, pageSize, total, dispatch }) => {
@@ -7,10 +7,25 @@ const List = ({ list, page, pageSize, total, dispatch }) => {
 	const handleChangePage = current => {
 		if (current !== page) getDatas(current);
 	};
-	const getDatas = page => {
+	const getDatas = (page) => {
 		dispatch({
 			type: 'reports/fetch',
 			payload: { page }
+		});
+	};
+	// 删除周报
+	const handleDelete = (id) => {
+		dispatch({
+			type: 'reports/remove',
+			payload: id,
+		}).then(res => {
+			console.log(res);
+			if (res && res.state === 'success') {
+				Message.success(res.msg);
+				getDatas(1);
+			} else {
+				Message.error(res ? res.msg : '周报删除异常');
+			}
 		});
 	};
 	return (
@@ -25,6 +40,11 @@ const List = ({ list, page, pageSize, total, dispatch }) => {
 										<Icon type="form" />
 									</a>
 								</Tooltip>
+								<Popconfirm title="确认要删除该周报嘛" onConfirm={handleDelete(item.id)}>
+									<Tooltip placement="top" title="删除">
+										<Icon type="delete" />
+									</Tooltip>
+								</Popconfirm>
 							</>
 						}>
 							<p className="title">{item.title.slice(0, 20)}</p>

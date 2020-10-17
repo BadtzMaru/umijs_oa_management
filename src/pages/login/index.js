@@ -1,5 +1,7 @@
 /*
     title: 登录
+    Routes:
+        - ./src/routes/PrivateRoute.js
 */
 import React from 'react';
 import { router } from 'umi';

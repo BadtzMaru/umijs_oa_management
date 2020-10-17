@@ -8,6 +8,9 @@ export default {
         total: 0,
         page: 1,
         pageSize: 5,
+        info: {
+            contant: '<p><br></p>'
+        },
     },
     reducers: {
         setData(state, { payload }) {
@@ -23,7 +26,13 @@ export default {
                 total,
                 page,
             };
-        }
+        },
+        setInfo(state, { payload }) {
+            return {
+                ...state,
+                info: payload,
+            };
+        },
     },
     effects: {
         *fetch({ payload: { page } }, { call, put, select }) {
@@ -68,6 +77,23 @@ export default {
         },
         *fetchInfo({ payload }, { call, put }) {
             const res = yield call(reportsServices.fetchInfo, payload);
+            if (res && res.state === 'success') {
+                yield put({
+                    type: 'setInfo',
+                    payload: res.data,
+                });
+            } else {
+                yield put({
+                    type: 'setInfo',
+                    payload: {},
+                });
+            }
+        },
+        *update({ payload }, { call }) {
+            return yield call(reportsServices.update, payload);
+        },
+        *remove({ payload }, { call }) {
+            return yield call(reportsServices.remove, payload);
         },
     },
     subscriptions: {
