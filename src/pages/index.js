@@ -1,6 +1,9 @@
-/*
-	title: 首页
-*/
+/**
+ * title: 首页
+ * Routes:
+ *   - ./src/routes/PrivateRoute.js
+ * authority: ["admin","user"]
+ */
 import { Card, Col, Row } from 'antd';
 import styles from './index.scss';
 import ReactEcharts from 'echarts-for-react';
